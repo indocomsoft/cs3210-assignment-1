@@ -3,22 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "line.h"
+#include "train.h"
+
 #define MAX_STATION_NAME_LENGTH 100
-
-typedef struct raw_line_t {
-    int num_stations;
-    int* stations;
-} line_t;
-
-typedef struct train_t {
-    char line;
-    int index;
-    bool travelling_forward;
-    bool doors_open;
-    int from;
-    int to;
-    int distance;
-} train_t;
 
 typedef struct raw_input_t {
     int num_stations;
@@ -99,14 +87,17 @@ void read_input(input_t* input)
     // GREEN LINE
     input->green_line = (line_t*)malloc(sizeof(line_t));
     build_line(input->green_line, input);
+    input->green_line->id = 'c';
 
     // YELLOW LINE
     input->yellow_line = (line_t*)malloc(sizeof(line_t));
     build_line(input->yellow_line, input);
+    input->green_line->id = 'y';
 
     // BLUE LINE
     input->blue_line = (line_t*)malloc(sizeof(line_t));
     build_line(input->blue_line, input);
+    input->green_line->id = 'b';
 
     // TICKS
     scanf("%d\n", &(input->ticks));
