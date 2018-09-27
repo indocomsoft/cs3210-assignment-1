@@ -1,10 +1,10 @@
 appname := sim
 
-CC := gcc -g
+CFLAGS := -g -pthread
 
-CXX := gcc -Wall -g
-# CXXFLAGS :=
-LDFLAGS :=  -fopenmp
+CXX := gcc
+CXXFLAGS := -Wall -g
+LDFLAGS :=  -fopenmp -pthread
 # LDLIBS :=
 
 
