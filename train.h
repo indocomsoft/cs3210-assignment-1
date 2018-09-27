@@ -26,6 +26,7 @@ typedef struct train_t {
     double next_state_time;
     double next_door_open_duration;
     int station_id;
+    int line_station_id;
 } train_t;
 
 train_t* build_train(int id, line_t* line);

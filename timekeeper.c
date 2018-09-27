@@ -8,12 +8,11 @@ void timekeeper_init(timekeeper_t* timekeeper)
     timekeeper->time = 0;
 }
 
-int timekeeper_increase_by(timekeeper_t* timekeeper, int duration)
+double timekeeper_increase_by(timekeeper_t* timekeeper, double duration, double current_time)
 {
-    int result;
     pthread_mutex_lock(&timekeeper->lock);
-    timekeeper->time += duration;
-    result = timekeeper->time;
+    double start = fmax(current_time, timekeeper->time);
+    timekeeper->time = start + duration;
     pthread_mutex_unlock(&timekeeper->lock);
-    return result;
+    return start;
 }
