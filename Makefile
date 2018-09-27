@@ -1,4 +1,4 @@
-appname := trains
+appname := sim
 
 CC := gcc -g
 
