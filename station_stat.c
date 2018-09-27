@@ -1,7 +1,7 @@
 #include "station_stat.h"
 
-#define max(a, b) (a > b ? a : b)
-#define min(a, b) (a < b ? a : b)
+#define max(a, b) (a >= b ? a : b)
+#define min(a, b) (a <= b ? a : b)
 
 void station_stat_init(station_stat_t* station_stat)
 {
