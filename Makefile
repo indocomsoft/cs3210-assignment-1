@@ -1,7 +1,9 @@
 appname := trains
 
-CXX := gcc
-CXXFLAGS := -Wall
+CC := gcc -g
+
+CXX := gcc -Wall -g
+# CXXFLAGS :=
 LDFLAGS :=  -fopenmp
 # LDLIBS :=
 
@@ -12,7 +14,7 @@ objects  := $(patsubst %.c, %.o, $(srcfiles))
 all: $(appname)
 
 $(appname): $(objects)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(appname) $(objects)
+	$(CXX) $(LDFLAGS) -o $(appname) $(objects)
 
 clean:
 	rm -f $(objects)
