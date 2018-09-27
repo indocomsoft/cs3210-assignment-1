@@ -1,12 +1,9 @@
 appname := sim
 
-CFLAGS := -g -pthread
+CFLAGS := -g -Wall -pthread -fopenmp
 
 CXX := gcc
-CXXFLAGS := -Wall -g
 LDFLAGS :=  -fopenmp -pthread
-# LDLIBS :=
-
 
 srcfiles := $(shell find . -name "*.c")
 objects  := $(patsubst %.c, %.o, $(srcfiles))

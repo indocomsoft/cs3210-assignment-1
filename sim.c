@@ -1,3 +1,4 @@
+#include <omp.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +20,7 @@ typedef struct raw_input_t {
     line_t* blue_line;
     int ticks;
     int* num_trains;
+    int total_trains;
 } input_t;
 
 void read_input(input_t*);
@@ -26,16 +28,51 @@ void build_line(line_t*, input_t*);
 void print_input(input_t*);
 void print_line(line_t*);
 void cleanup_input(input_t*);
+void run_simulation(input_t*);
 
 int main()
 {
-    int i;
-    int j;
     input_t* input = (input_t*)malloc(sizeof(input_t));
 
     read_input(input);
     print_input(input);
+
+    run_simulation(input);
+
     cleanup_input(input);
+
+    return 0;
+}
+
+void run_simulation(input_t* input)
+{
+    omp_set_dynamic(0);
+    omp_set_num_threads(input->total_trains);
+    printf("total trains: %d\n", input->total_trains);
+#pragma omp parallel
+    {
+        train_t* train;
+        int tid = omp_get_thread_num();
+        if (tid >= input->green_line->start_train_id && tid < input->yellow_line->start_train_id) {
+            train = build_train(tid, input->green_line);
+        } else if (tid >= input->yellow_line->start_train_id && tid < input->blue_line->start_train_id) {
+            train = build_train(tid, input->yellow_line);
+        } else {
+            train = build_train(tid, input->blue_line);
+        }
+#pragma omp critical
+        {
+
+            printf("tid: %d\n", tid);
+            printf("train name: %s, ", train->name);
+            if (train->travelling_forward) {
+                printf("forward: true, ");
+            } else {
+                printf("forward: false, ");
+            }
+            printf("%lf\n", train->spawn_time);
+        }
+    }
 }
 
 void read_input(input_t* input)
@@ -88,17 +125,17 @@ void read_input(input_t* input)
     // GREEN LINE
     input->green_line = (line_t*)malloc(sizeof(line_t));
     build_line(input->green_line, input);
-    input->green_line->id = 'c';
+    input->green_line->id = 'g';
 
     // YELLOW LINE
     input->yellow_line = (line_t*)malloc(sizeof(line_t));
     build_line(input->yellow_line, input);
-    input->green_line->id = 'y';
+    input->yellow_line->id = 'y';
 
     // BLUE LINE
     input->blue_line = (line_t*)malloc(sizeof(line_t));
     build_line(input->blue_line, input);
-    input->green_line->id = 'b';
+    input->blue_line->id = 'b';
 
     // TICKS
     scanf("%d\n", &(input->ticks));
@@ -112,6 +149,14 @@ void read_input(input_t* input)
         sscanf(next, "%d", &(input->num_trains[i]));
         i++;
     }
+    input->green_line->num_trains = input->num_trains[0];
+    input->green_line->start_train_id = 0;
+    input->yellow_line->num_trains = input->num_trains[1];
+    input->yellow_line->start_train_id = input->num_trains[0];
+    input->blue_line->num_trains = input->num_trains[2];
+    input->blue_line->start_train_id = input->num_trains[0] + input->num_trains[1];
+
+    input->total_trains = input->blue_line->start_train_id + input->blue_line->num_trains;
 
     // CLEANUP
     free(str_buf);
