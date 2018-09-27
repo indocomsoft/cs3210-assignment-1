@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +9,16 @@ typedef struct raw_line_t {
     int num_stations;
     int* stations;
 } line_t;
+
+typedef struct train_t {
+    char line;
+    int index;
+    bool travelling_forward;
+    bool doors_open;
+    int from;
+    int to;
+    int distance;
+} train_t;
 
 typedef struct raw_input_t {
     int num_stations;
