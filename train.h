@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TRAIN_DEFINED
-
 #define MAX_TRAIN_NAME_LENGTH 10
 
 typedef struct train_t {
