@@ -4,9 +4,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef LINE_DEFINED
 #include "line.h"
+#endif
+
+#ifndef STATION_STAT_DEFINED
+#include "station_stat.h"
+#endif
+
+#ifndef TIMEKEEPER_DEFINED
 #include "timekeeper.h"
+#endif
+
+#ifndef TRAIN_DEFINED
 #include "train.h"
+#endif
 
 #define MAX_STATION_NAME_LENGTH 100
 
@@ -207,6 +219,11 @@ void build_line(line_t* line, input_t* input)
     }
     line->num_stations = i;
     free(str_buf);
+
+    line->stats = (station_stat_t*)malloc(sizeof(station_stat_t) * line->num_stations);
+    for (i = 0; i < line->num_stations; i++) {
+        station_stat_init(&line->stats[i]);
+    }
 }
 
 void print_input(input_t* input)

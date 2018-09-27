@@ -3,7 +3,7 @@
 #define DEPART 2
 #define ARRIVE 3
 
-#ifndef LINE_T_DEFINED
+#ifndef LINE_DEFINED
 #include "line.h"
 #endif
 
@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define TRAIN_DEFINED
 
 #define MAX_TRAIN_NAME_LENGTH 10
 

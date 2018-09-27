@@ -1,5 +1,7 @@
 #include <pthread.h>
 
+#define TIMEKEEPER_DEFINED
+
 typedef struct timekeeper_t {
     pthread_mutex_t lock;
     int time;
