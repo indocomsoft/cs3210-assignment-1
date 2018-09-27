@@ -1,5 +1,6 @@
 appname := sim
 
+CC := gcc
 CFLAGS := -g -Wall -pthread -fopenmp
 
 CXX := gcc
