@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "line.h"
+#include "timekeeper.h"
 #include "train.h"
 
 #define MAX_STATION_NAME_LENGTH 100
