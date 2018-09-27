@@ -8,11 +8,11 @@
 
 typedef struct station_stat_t {
     int num_door_opening;
-    int total_wait_time;
-    int min_wait_time;
-    int max_wait_time;
-    int last_closed_time;
+    double total_wait_time;
+    double min_wait_time;
+    double max_wait_time;
+    double last_closed_time;
 } station_stat_t;
 
 void station_stat_init(station_stat_t* station_stat);
-void station_stat_open_door(station_stat_t*, int current_time, int duration);
+void station_stat_open_door(station_stat_t*, double current_time, double duration);

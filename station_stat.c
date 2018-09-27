@@ -12,9 +12,9 @@ void station_stat_init(station_stat_t* station_stat)
     station_stat->last_closed_time = 0;
 }
 
-void station_stat_open_door(station_stat_t* station_stat, int current_time, int duration)
+void station_stat_open_door(station_stat_t* station_stat, double current_time, double duration)
 {
-    int time_taken = current_time - station_stat->last_closed_time;
+    double time_taken = current_time - station_stat->last_closed_time;
 
     if (station_stat->num_door_opening == 0) {
         // Do not count waiting time of first train
