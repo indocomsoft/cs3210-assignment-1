@@ -23,8 +23,10 @@ typedef struct train_t {
     int next_state;
     double next_state_time;
     double next_door_open_duration;
+    double next_travel_duration;
     int station_id;
     int line_station_id;
 } train_t;
 
 train_t* build_train(int id, line_t* line);
+int next_line_station_id(train_t* train);
