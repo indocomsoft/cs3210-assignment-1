@@ -125,6 +125,7 @@ void run_simulation(input_t* input)
     }
     cleanup_station_timekeepers(station_timekeepers);
     cleanup_track_timekeepers(track_timekeepers, input);
+    print_stats_input(input);
 }
 
 void print_train_status(int cur_time, train_t* train)

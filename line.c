@@ -38,3 +38,26 @@ void print_line(line_t* line)
     }
     printf("\n");
 }
+
+void print_stats_line(line_t* line)
+{
+    double sum_avg_time = 0, sum_max_time = 0, sum_min_time = 0;
+    double avg_avg_time, avg_max_time, avg_min_time;
+    int i;
+    // Forward
+    for (i = 0; i < line->num_stations; i++) {
+        sum_avg_time += line->stats[i].total_wait_time[STATION_STAT_FORWARD] / (double)line->stats[i].num_door_opening[STATION_STAT_FORWARD];
+        sum_max_time += line->stats[i].max_wait_time[STATION_STAT_FORWARD];
+        sum_min_time += line->stats[i].min_wait_time[STATION_STAT_FORWARD];
+    }
+    // Reverse
+    for (i = 0; i < line->num_stations; i++) {
+        sum_avg_time += line->stats[i].total_wait_time[STATION_STAT_REVERSE] / (double)line->stats[i].num_door_opening[STATION_STAT_REVERSE];
+        sum_max_time += line->stats[i].max_wait_time[STATION_STAT_REVERSE];
+        sum_min_time += line->stats[i].min_wait_time[STATION_STAT_REVERSE];
+    }
+    avg_avg_time = sum_avg_time / (2 * (double)line->num_stations);
+    avg_max_time = sum_max_time / (2 * (double)line->num_stations);
+    avg_min_time = sum_min_time / (2 * (double)line->num_stations);
+    printf("%d trains -> %.1lf, %.1lf, %.1lf\n", line->num_trains, avg_avg_time, avg_max_time, avg_min_time);
+}

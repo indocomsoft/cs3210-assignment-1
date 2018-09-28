@@ -1,8 +1,6 @@
 #ifndef INPUT_DEFINED
 #define INPUT_DEFINED
 
-#include <stdio.h>
-
 typedef struct raw_input_t input_t;
 
 #include "line.h"
@@ -28,5 +26,6 @@ struct raw_input_t {
 void read_input(input_t*);
 void print_input(input_t*);
 void cleanup_input(input_t*);
+void print_stats_input(input_t*);
 
 #endif

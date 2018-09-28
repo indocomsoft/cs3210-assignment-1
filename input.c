@@ -142,3 +142,16 @@ void cleanup_input(input_t* input)
     free(input->num_trains);
     free(input);
 }
+
+void print_stats_input(input_t* input)
+{
+    // Green
+    printf("green: ");
+    print_stats_line(input->green_line);
+    // Yellow
+    printf("yellow: ");
+    print_stats_line(input->yellow_line);
+    // Blue
+    printf("blue: ");
+    print_stats_line(input->blue_line);
+}

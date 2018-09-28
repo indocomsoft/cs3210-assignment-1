@@ -16,5 +16,6 @@ struct raw_line_t {
 
 void build_line(line_t*, input_t*);
 void print_line(line_t*);
+void print_stats_line(line_t*);
 
 #endif
