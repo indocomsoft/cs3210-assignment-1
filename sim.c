@@ -27,6 +27,13 @@ void run_simulation(input_t* input)
 
     timekeeper_t** track_timekeepers = setup_track_timekeepers(input);
     timekeeper_t* station_timekeepers = setup_station_timekeepers(input);
+    int threads;
+
+#pragma omp parallel
+    {
+        threads = omp_get_num_threads();
+    }
+    printf("Running simulation with %d threads\n", threads);
 
     int cur_time = 0;
 #pragma omp parallel shared(track_timekeepers, station_timekeepers)
