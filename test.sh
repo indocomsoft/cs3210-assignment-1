@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+# Use bash for beautiful `time` output
+# But otherwise, this file is POSIX shell compatible
 
 if [ "$1" = "" ]; then
   echo 'Usage: test.sh <directory containing test files>'
