@@ -46,15 +46,25 @@ void print_stats_line(line_t* line)
     int i;
     // Forward
     for (i = 0; i < line->num_stations; i++) {
-        sum_avg_time += line->stats[i].total_wait_time[STATION_STAT_FORWARD] / (double)line->stats[i].num_door_opening[STATION_STAT_FORWARD];
+        if (line->stats[i].num_door_opening[STATION_STAT_FORWARD] != 0) {
+            sum_avg_time += line->stats[i].total_wait_time[STATION_STAT_FORWARD] / (double)line->stats[i].num_door_opening[STATION_STAT_FORWARD];
+        }
         sum_max_time += line->stats[i].max_wait_time[STATION_STAT_FORWARD];
         sum_min_time += line->stats[i].min_wait_time[STATION_STAT_FORWARD];
+#ifdef DEBUG
+        printf("Line %c sum: %.1lf, %.1lf, %.1lf\n", line->id, sum_avg_time, sum_max_time, sum_min_time);
+#endif
     }
     // Reverse
     for (i = 0; i < line->num_stations; i++) {
-        sum_avg_time += line->stats[i].total_wait_time[STATION_STAT_REVERSE] / (double)line->stats[i].num_door_opening[STATION_STAT_REVERSE];
+        if (line->stats[i].num_door_opening[STATION_STAT_REVERSE] != 0) {
+            sum_avg_time += line->stats[i].total_wait_time[STATION_STAT_REVERSE] / (double)line->stats[i].num_door_opening[STATION_STAT_REVERSE];
+        }
         sum_max_time += line->stats[i].max_wait_time[STATION_STAT_REVERSE];
         sum_min_time += line->stats[i].min_wait_time[STATION_STAT_REVERSE];
+#ifdef DEBUG
+        printf("Line %c sum: %.1lf, %.1lf, %.1lf\n", line->id, sum_avg_time, sum_max_time, sum_min_time);
+#endif
     }
     avg_avg_time = sum_avg_time / (2 * (double)line->num_stations);
     avg_max_time = sum_max_time / (2 * (double)line->num_stations);
