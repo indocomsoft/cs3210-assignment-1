@@ -47,7 +47,7 @@ void run_simulation(input_t* input)
             while (train->next_state_time >= 0 && train->next_state_time <= cur_time) {
                 double previous_event_time = train->next_state_time;
                 if (train->next_state == OPEN_DOOR) {
-                    station_stat_open_door(&train->line->stats[train->line_station_id], cur_time, train->next_door_open_duration);
+                    station_stat_open_door(&train->line->stats[train->line_station_id], cur_time, train->next_door_open_duration, train->travelling_forward);
                     train->next_state = CLOSE_DOOR;
                     train->next_state_time += train->next_door_open_duration;
                     print_train_status(cur_time, previous_event_time, input->station_names, train, -1, "open door");
