@@ -1,10 +1,8 @@
 #include "station_stat.h"
 
-#define max(a, b) (a >= b ? a : b)
-#define min(a, b) (a <= b ? a : b)
-
 void station_stat_init(station_stat_t* station_stat)
 {
+    pthread_mutex_init(&station_stat->lock, NULL);
     for (int i = 0; i < 2; i++) {
         station_stat->num_door_opening[i] = 0;
         station_stat->total_wait_time[i] = 0;
@@ -14,10 +12,11 @@ void station_stat_init(station_stat_t* station_stat)
     }
 }
 
-void station_stat_open_door(station_stat_t* station_stat, double current_time, double duration, bool forward)
+void station_stat_open_door(station_stat_t* station_stat, int current_time, int duration, bool forward)
 {
+    pthread_mutex_lock(&station_stat->lock);
     int idx = forward ? STATION_STAT_FORWARD : STATION_STAT_REVERSE;
-    double time_taken = current_time - station_stat->last_closed_time[idx];
+    int time_taken = current_time - station_stat->last_closed_time[idx];
 
     if (station_stat->num_door_opening[idx] == 0) {
         // Do not count waiting time of first train
@@ -34,4 +33,5 @@ void station_stat_open_door(station_stat_t* station_stat, double current_time, d
 
     station_stat->last_closed_time[idx] = current_time + duration;
     station_stat->num_door_opening[idx]++;
+    pthread_mutex_unlock(&station_stat->lock);
 }

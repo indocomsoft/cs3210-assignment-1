@@ -16,15 +16,15 @@
 
 typedef struct train_t {
     line_t* line;
-    double spawn_time;
+    int spawn_time;
     int id;
     char* name;
     bool travelling_forward;
     bool spawned;
     int next_state;
-    double next_state_time;
-    double next_door_open_duration;
-    double next_travel_duration;
+    int next_state_time;
+    int next_door_open_duration;
+    int next_travel_duration;
     int station_id;
     int line_station_id;
 } train_t;
