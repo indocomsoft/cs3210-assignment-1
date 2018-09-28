@@ -4,7 +4,7 @@ CC := gcc
 CFLAGS := -g -Wall -pthread -fopenmp
 
 CXX := gcc
-LDFLAGS :=  -fopenmp -pthread
+LDFLAGS :=  -fopenmp -pthread -lm
 
 srcfiles := $(shell find . -name "*.c")
 objects  := $(patsubst %.c, %.o, $(srcfiles))

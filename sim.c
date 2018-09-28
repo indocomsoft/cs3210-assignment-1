@@ -1,6 +1,6 @@
 #include "sim.h"
 
-#define DEBUG
+// #define DEBUG
 // #define PRINT_TRAIN_OUTPUT
 
 int main()
@@ -45,7 +45,7 @@ void run_simulation(input_t* input)
             if ((int)train->spawn_time == cur_time) {
                 train->spawned = true;
                 train->next_state = OPEN_DOOR;
-                train->next_door_open_duration = input->popularity[train->station_id] * (rand() % 10 + 1);
+                train->next_door_open_duration = (int)ceil((double)input->popularity[train->station_id] * (rand() % 10 + 1));
                 train->next_state_time = timekeeper_increase_by(&station_timekeepers[train->station_id], train->next_door_open_duration, cur_time);
                 print_debug_train_status(cur_time, input->station_names, train, -1, "spawn");
             }
@@ -73,7 +73,7 @@ void run_simulation(input_t* input)
                         train->line_station_id = next_line_station_idx;
                         train->station_id = next_station_id;
                         train->next_state = OPEN_DOOR;
-                        train->next_door_open_duration = input->popularity[train->station_id] * (rand() % 10 + 1);
+                        train->next_door_open_duration = (int)ceil((double)input->popularity[train->station_id] * (rand() % 10 + 1));
                         train->next_state_time = timekeeper_increase_by(&station_timekeepers[train->station_id], train->next_door_open_duration, cur_time);
                         print_debug_train_status(cur_time, input->station_names, train, -1, "arrived");
                     }
