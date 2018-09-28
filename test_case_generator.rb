@@ -139,7 +139,7 @@ end
 dir_name = "test-#{Time.now.strftime("%Y%m%d-%H%M")}"
 Dir.mkdir(dir_name)
 
-(0..64).each do |n|
+(1..64).each do |n|
   puts "Generating test cases for #{n} threads"
   permutate_sum(n).each do |trains|
     File.open("#{dir_name}/#{trains.join("-")}", "w") do |f|
