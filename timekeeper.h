@@ -1,12 +1,12 @@
 #ifndef TIMEKEEPER_DEFINED
 #define TIMEKEEPER_DEFINED
 
-#include "math.h"
+#include "station_stat.h"
 #include <pthread.h>
 
 typedef struct timekeeper_t {
     pthread_mutex_t lock;
-    double time;
+    int time;
 } timekeeper_t;
 
 /**
@@ -19,6 +19,6 @@ void timekeeper_init(timekeeper_t* timekeeper);
  *
  * This operation is atomic.
  */
-double timekeeper_increase_by(timekeeper_t* timekeeper, double duration, double current_time);
+int timekeeper_increase_by(timekeeper_t* timekeeper, int duration, int current_time);
 
 #endif

@@ -6,7 +6,8 @@ def parse(filename):
     try:
         with open(filename, "r") as f:
             results = f.readlines()
-            print_by_line_by_time(results[1:])
+            print_by_line_by_time(
+                list(filter(lambda x: x[0] == "|", results[1:])))
     except Exception as e:
         print(e)
 
@@ -20,11 +21,11 @@ def print_by_line_by_time(results):
 
     # Sort by train id
     results.sort(key=lambda r: int([x.strip()
-                                    for x in filter(None, r.split("|"))][2][1]))
+                                    for x in filter(None, r.split("|"))][1][1]))
 
     # Group by line
     results.sort(key=lambda r: [x.strip()
-                                for x in filter(None, r.split("|"))][2][0])
+                                for x in filter(None, r.split("|"))][1][0])
 
     for r in results:
         print(r.strip())
