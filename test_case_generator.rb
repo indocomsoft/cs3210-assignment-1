@@ -9,7 +9,7 @@ def generate_random_graph(s, max_weight)
 end
 
 def print_graph(matrix)
-  matrix.each { |row| puts row.join(' ') }
+  matrix.map { |row| row.join(' ') }.join("\n")
 end
 
 def prim(matrix)
@@ -88,12 +88,25 @@ def construct_path(state, meta)
   result.reverse
 end
 
+def permutate_sum(n)
+  (0..n).to_a.flat_map { |i| (0..(n - i)).to_a.map { |j| [i, j, n - i - j] } }
+end
+
+def usage_message
+  puts "Invalid args"
+  puts "Usage: ruby test_case_generator.rb <num_vertex> <max_weight> <num_tick>"
+  exit 1
+end
+
 # Start of main
-s, max_weight = ARGV.map { |a| a.to_i }
+if ARGV.length != 3
+  usage_message
+end
+
+s, max_weight, tick = ARGV.map { |a| a.to_i }
 
 if s <= 0 || max_weight <= 0
-  puts "Invalid args"
-  exit 1
+  usage_message
 end
 
 primmed = nil
@@ -123,19 +136,22 @@ while green_line.length < MIN_NUM_STATIONS_LINE || yellow_line.length < MIN_NUM_
   blue_line = bfs(primmed, blue_termini)
 end
 
-puts s
-puts stations.join(",")
-print_graph(primmed)
-puts popularities.join(",")
-puts green_line.map { |s| stations[s] }.join(",")
-puts yellow_line.map { |s| stations[s] }.join(",")
-puts blue_line.map { |s| stations[s] }.join(",")
-puts 100
-puts [10,10,10].join(",")
+dir_name = "test-#{Time.now.strftime("%Y%m%d-%H%M")}"
+Dir.mkdir(dir_name)
 
-# p green_termini
-# p yellow_termini
-# p blue_termini
-# p green_line
-# p yellow_line
-# p blue_line
+(0..64).each do |n|
+  puts "Generating test cases for #{n} threads"
+  permutate_sum(n).each do |trains|
+    File.open("#{dir_name}/#{trains.join("-")}", "w") do |f|
+      f.puts s
+      f.puts stations.join(",")
+      f.puts print_graph(primmed)
+      f.puts popularities.join(",")
+      f.puts green_line.map { |s| stations[s] }.join(",")
+      f.puts yellow_line.map { |s| stations[s] }.join(",")
+      f.puts blue_line.map { |s| stations[s] }.join(",")
+      f.puts tick
+      f.puts trains.join(",")
+    end
+  end
+end
