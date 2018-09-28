@@ -1,11 +1,16 @@
 #include "sim.h"
 
+// #define DEBUG
+#define PRINT_TRAIN_OUTPUT
+
 int main()
 {
     input_t* input = (input_t*)malloc(sizeof(input_t));
 
     read_input(input);
-    // print_input(input);
+#ifdef DEBUG
+    print_input(input);
+#endif
 
     run_simulation(input);
 
@@ -38,10 +43,11 @@ void run_simulation(input_t* input)
         }
         while (cur_time < input->ticks) {
             if ((int)train->spawn_time == cur_time) {
+                train->spawned = true;
                 train->next_state = OPEN_DOOR;
                 train->next_door_open_duration = input->popularity[train->station_id] * (rand() % 10 + 1);
                 train->next_state_time = timekeeper_increase_by(&station_timekeepers[train->station_id], train->next_door_open_duration, cur_time);
-                print_train_status(cur_time, 0, input->station_names, train, -1, "spawn");
+                print_debug_train_status(cur_time, 0, input->station_names, train, -1, "spawn");
             }
 
             while (train->next_state_time >= 0 && train->next_state_time <= cur_time) {
@@ -50,7 +56,7 @@ void run_simulation(input_t* input)
                     station_stat_open_door(&train->line->stats[train->line_station_id], cur_time, train->next_door_open_duration, train->travelling_forward);
                     train->next_state = CLOSE_DOOR;
                     train->next_state_time += train->next_door_open_duration;
-                    print_train_status(cur_time, previous_event_time, input->station_names, train, -1, "open door");
+                    print_debug_train_status(cur_time, previous_event_time, input->station_names, train, -1, "open door");
                 } else {
                     int next_line_station_idx = next_line_station_id(train);
                     int next_station_id = train->line->stations[next_line_station_idx];
@@ -59,29 +65,46 @@ void run_simulation(input_t* input)
                         train->next_travel_duration = travel_time;
                         train->next_state_time = timekeeper_increase_by(&track_timekeepers[train->station_id][next_station_id], travel_time, cur_time);
                         train->next_state = DEPART;
-                        print_train_status(cur_time, previous_event_time, input->station_names, train, -1, "close door");
+                        print_debug_train_status(cur_time, previous_event_time, input->station_names, train, -1, "close door");
                     } else if (train->next_state == DEPART) {
                         train->next_state = ARRIVE;
                         train->next_state_time += train->next_travel_duration;
-                        print_train_status(cur_time, previous_event_time, input->station_names, train, next_station_id, "departed");
+                        print_debug_train_status(cur_time, previous_event_time, input->station_names, train, next_station_id, "departed");
                     } else if (train->next_state == ARRIVE) {
                         train->line_station_id = next_line_station_idx;
                         train->station_id = next_station_id;
                         train->next_state = OPEN_DOOR;
                         train->next_door_open_duration = input->popularity[train->station_id] * (rand() % 10 + 1);
                         train->next_state_time = timekeeper_increase_by(&station_timekeepers[train->station_id], train->next_door_open_duration, cur_time);
-                        print_train_status(cur_time, previous_event_time, input->station_names, train, -1, "arrived");
+                        print_debug_train_status(cur_time, previous_event_time, input->station_names, train, -1, "arrived");
                     }
                 }
             }
 
+#ifdef PRINT_TRAIN_OUTPUT
+// Ensure that all actions to be taken within this window are complete first;
 #pragma omp barrier
+#pragma omp single
+            {
+                printf("%d: ", cur_time); // Only print this once
+            }
+            print_train_status(cur_time, train);
+#pragma omp barrier
+// Ensure that all train statuses are printed already
+#pragma omp single
+            {
+                printf("\n"); // Only print this once
+            }
+#endif
 
+#pragma omp barrier
 #pragma omp single
             {
                 cur_time++;
             }
         }
+
+        destroy_train(train);
         // #pragma omp critical
         //         {
         //             if (tid >= 10 && tid < 20) {
@@ -100,10 +123,36 @@ void run_simulation(input_t* input)
         //             }
         //         }
     }
+    cleanup_station_timekeepers(station_timekeepers);
+    cleanup_track_timekeepers(track_timekeepers, input);
 }
 
-void print_train_status(int cur_time, double previous_event_time, char** station_names, train_t* train, int next_station_id, char* status)
+void print_train_status(int cur_time, train_t* train)
 {
+#pragma omp critical
+    {
+        int next_line_station_idx;
+        int next_station_id;
+
+        if (train->spawned == true) {
+            switch (train->next_state) {
+            case OPEN_DOOR:
+            case CLOSE_DOOR:
+            case DEPART:
+                printf("%s-s%d, ", train->name, train->station_id);
+                break;
+            case ARRIVE:
+                next_line_station_idx = next_line_station_id(train);
+                next_station_id = train->line->stations[next_line_station_idx];
+                printf("%s-s%d->s%d, ", train->name, train->station_id, next_station_id);
+            }
+        }
+    }
+}
+
+void print_debug_train_status(int cur_time, double previous_event_time, char** station_names, train_t* train, int next_station_id, char* status)
+{
+#ifdef DEBUG
 #pragma omp critical
     {
         printf("| %-3d | %-7.2lf | %-5s | %-15s | %-15s | %-15s | %-7.2lf \n",
@@ -115,6 +164,21 @@ void print_train_status(int cur_time, double previous_event_time, char** station
             status,
             train->next_state_time);
     }
+#endif
+}
+
+void cleanup_track_timekeepers(timekeeper_t** timekeepers, input_t* input)
+{
+    int i;
+    for (i = 0; i < input->num_stations; i++) {
+        free(timekeepers[i]);
+    }
+    free(timekeepers);
+}
+
+void cleanup_station_timekeepers(timekeeper_t* timekeepers)
+{
+    free(timekeepers);
 }
 
 timekeeper_t** setup_track_timekeepers(input_t* input)

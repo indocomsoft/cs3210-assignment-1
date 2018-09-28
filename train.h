@@ -20,6 +20,7 @@ typedef struct train_t {
     int id;
     char* name;
     bool travelling_forward;
+    bool spawned;
     int next_state;
     double next_state_time;
     double next_door_open_duration;
@@ -29,4 +30,5 @@ typedef struct train_t {
 } train_t;
 
 train_t* build_train(int id, line_t* line);
+void destroy_train(train_t* train);
 int next_line_station_id(train_t* train);

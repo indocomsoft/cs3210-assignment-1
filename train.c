@@ -21,6 +21,12 @@ train_t* build_train(int tid, line_t* line)
     return train;
 }
 
+void destroy_train(train_t* train)
+{
+    free(train->name);
+    free(train);
+};
+
 int next_line_station_id(train_t* train)
 {
     if (train->line_station_id == 0 && train->travelling_forward == false) {
