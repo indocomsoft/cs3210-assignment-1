@@ -1,7 +1,7 @@
 #include "sim.h"
 
 // #define DEBUG
-// #define PRINT_TRAIN_OUTPUT
+#define PRINT_TRAIN_OUTPUT
 
 int main()
 {

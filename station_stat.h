@@ -7,14 +7,12 @@
 typedef struct station_stat_t station_stat_t;
 
 #include "timekeeper.h"
-#include <pthread.h>
 #include <stdbool.h>
 
 #define STATION_STAT_FORWARD 0
 #define STATION_STAT_REVERSE 1
 
 struct station_stat_t {
-    pthread_mutex_t lock;
     int num_door_opening[2];
     int total_wait_time[2];
     int min_wait_time[2];

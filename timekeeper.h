@@ -2,10 +2,8 @@
 #define TIMEKEEPER_DEFINED
 
 #include "station_stat.h"
-#include <pthread.h>
 
 typedef struct timekeeper_t {
-    pthread_mutex_t lock;
     int time;
 } timekeeper_t;
 
