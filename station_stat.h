@@ -1,8 +1,8 @@
 #ifndef STATION_STAT_DEFINED
 #define STATION_STAT_DEFINED
 
-#define max(a, b) (a >= b ? a : b)
-#define min(a, b) (a <= b ? a : b)
+#define max(a, b) (((a) >= (b)) ? (a) : (b))
+#define min(a, b) (((a) <= (b)) ? (a) : (b))
 
 typedef struct station_stat_t station_stat_t;
 
